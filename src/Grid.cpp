@@ -4,19 +4,18 @@
 
 #include <iostream>
 
-Grid::Grid(bool show_hidden, bool highlight_hit, int num_words,
-           int max_word_length)
+Grid::Grid(WordLoader& wordloader, bool show_hidden, bool highlight_hit,
+           int num_words)
     : show_hidden_(show_hidden),
       highlight_hit_(highlight_hit),
-      max_word_length_(max_word_length),
-      num_words_(num_words) {
-  num_hidden_ = num_words * max_word_length;
-  std::array<std::string, 5> words{"abask", "abate", "abaya", "abbas", "abbed"};
+      num_words_(num_words),
+      num_hidden_(num_words * kWordLength_) {
+  const auto words = wordloader.sample_words(num_words);
   word_grid_.reserve(num_words);
   for (int row = 0; row < num_words; row++) {
     std::vector<GridData> row_data;
-    row_data.reserve(max_word_length);
-    const auto& current_word = words[row];
+    row_data.reserve(kWordLength_);
+    const auto& current_word = words.at(row);
     for (const auto& letter : current_word) {
       row_data.emplace_back(letter, true);
     }
@@ -29,7 +28,7 @@ GuessResult Grid::guess(const char col_in, const int row_in, const char guess) {
   GuessResult res;
   // validate col
   auto [col, row] = sanitizeGuess(col_in, row_in);
-  res.valid = col >= 'A' && col <= 'E' && row >= 1 && row <= 5;
+  res.valid = col >= 'A' && col <= 'E' && row >= 1 && row <= num_words_;
   if (res.valid) {
     // char2int
     int j = col - 'A';

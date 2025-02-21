@@ -3,6 +3,8 @@
 #include <array>
 #include <vector>
 
+#include "WordLoader.h"
+
 struct GridData {
   GridData(char letter, bool is_hidden)
       : letter(letter), is_hidden(is_hidden) {}
@@ -17,8 +19,8 @@ struct GuessResult {
 
 class Grid {
  public:
-  Grid(bool show_hidden = false, bool highlight_hit = false, int num_words = 5,
-       int max_word_length = 5);
+  Grid(WordLoader& wordloader, bool show_hidden = false,
+       bool highlight_hit = false, int num_words = 5);
   void displayGrid() const;
   GuessResult guess(const char col_in, const int row_in, const char guess);
   bool revealed() const { return num_hidden_ == 0; }
@@ -30,7 +32,7 @@ class Grid {
   bool get_highlight_hit() const { return highlight_hit_; }
 
  private:
-  int max_word_length_;
+  static constexpr int kWordLength_{5};
   int num_words_;
   std::vector<std::vector<GridData>> word_grid_;
   bool show_hidden_{false};

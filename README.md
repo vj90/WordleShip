@@ -17,15 +17,19 @@ Guess the 5x5 grid of letters. Rows are valid words, columns are not
 ## Instructions 
 Follow instructions on the console until the game is over.
 
+# Latest features
+- More words
+
 # Upcoming features
-- [ ] More words
+- [x] More words
 - [ ] Maximum number of guesses
 - [ ] Hints
 - [ ] Play against the computer
 - [ ] Two different modes of play
 - [ ] Keyboard showing valid guesses
 - [ ] Guess entire words
+- [ ] Disallow words not in the dictionary
 
 # Current limitations
 - [ ] Missing features (see above)
-- [ ] Only one grid
+- [x] Only one grid

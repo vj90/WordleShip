@@ -19,10 +19,21 @@ if(BUILD_GMOCK)
 endif()
 #########################
 
-add_executable(Wordleship_Simple src/main.cpp src/Grid.cpp)
+add_executable(Wordleship_Simple src/main.cpp src/Grid.cpp src/WordLoader.cpp)
 
 if (BUILD_GMOCK)
     # Note: this needs to come before the add_subdirectory(test) so that ctest can find the test executable
     enable_testing()
     add_subdirectory(test)
 endif()
+
+## Copy word list to build directory
+set(copy_source_dir "${CMAKE_SOURCE_DIR}/src")
+set(copy_dest_dir "${CMAKE_BINARY_DIR}")
+set(copy_file_name "wordlist.csv")
+
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD 
+    COMMAND ${CMAKE_COMMAND} -E copy "${copy_source_dir}/${copy_file_name}" "${copy_dest_dir}/${copy_file_name}"
+    COMMENT "Copying ${copy_file_name} to build directory"
+)

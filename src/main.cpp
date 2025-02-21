@@ -1,15 +1,7 @@
 #include <iostream>
 
 #include "Grid.h"
-
-void displayGrid() {
-  std::cout << "  A B C D E" << std::endl;
-  std::cout << "1 _ _ _ _ _" << std::endl;
-  std::cout << "2 _ _ _ _ _" << std::endl;
-  std::cout << "3 _ _ _ _ _" << std::endl;
-  std::cout << "4 _ _ _ _ _" << std::endl;
-  std::cout << "5 _ _ _ _ _" << std::endl;
-}
+#include "WordLoader.h"
 
 void processGuess(Grid& grid) {
   std::cout << "Enter column (A-E), row (1-5), and guess" << std::endl;
@@ -34,25 +26,39 @@ void processGuess(Grid& grid) {
   }
 }
 
+bool processInput(Grid& grid) {
+  std::cout << "Press 'g' to make a guess, 'q' to exit" << std::endl;
+  std::string input;
+  std::cin >> input;
+  if (input == "q") {
+    return true;
+  } else if (input == "g") {
+    processGuess(grid);
+  }
+  return false;
+}
+
 int main() {
-  // start game
-  std::cout << "Welcome to the WordleShip!" << std::endl;
-  Grid AI_grid;
+  std::cout << "Loading words..." << std::endl;
+  WordLoader loader("wordlist.txt");
+  const auto words = loader.sample_words(5);
+  // print words to console
+  for (const auto& word : words) {
+    std::cout << word << std::endl;
+  }
+
+  Grid AI_grid(loader);
   bool exit{false};
   bool game_over{false};
+
+  // game loop
+  std::cout << "Welcome to the WordleShip!" << std::endl;
   while (!exit && !game_over) {
     AI_grid.displayGrid();
-    std::cout << "Press 'g' to make a guess, 'q' to exit" << std::endl;
-    std::string input;
-    std::cin >> input;
-    if (input == "q") {
-      exit = true;
-    } else if (input == "g") {
-      processGuess(AI_grid);
-      game_over = AI_grid.revealed();
-    }
+    exit = processInput(AI_grid);
   }
   AI_grid.displayGrid();
   std::cout << "Game over!" << std::endl;
+
   return 0;
 }
