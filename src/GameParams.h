@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ostream>
 struct GameParams {
+  GameParams() = default;
   int num_words{5};
   int max_guesses{50};
 

@@ -1,6 +1,7 @@
 #ifndef GRID_H
 #define GRID_H
 #include <array>
+#include <tuple>
 #include <vector>
 
 #include "WordLoader.h"
@@ -19,8 +20,9 @@ struct GuessResult {
 
 class Grid {
  public:
-  Grid(WordLoader& wordloader, bool show_hidden = false,
-       bool highlight_hit = false, int num_words = 5);
+  Grid(bool show_hidden = false, bool highlight_hit = false);
+  void init(WordLoader& wordloader, const int num_words);
+
   void displayGrid() const;
   GuessResult guess(const char col_in, const int row_in, const char guess);
   bool revealed() const { return num_hidden_ == 0; }
@@ -30,15 +32,19 @@ class Grid {
   bool get_show_hidden() const { return show_hidden_; }
   void set_highlight_hit(bool highlight_hit) { highlight_hit_ = highlight_hit; }
   bool get_highlight_hit() const { return highlight_hit_; }
+  void set_name(const std::string& name) { name_ = name; }
+  const std::string& name() const { return name_; }
 
  private:
   static constexpr int kWordLength_{5};
-  int num_words_;
+  int num_words_{-1};
   std::vector<std::vector<GridData>> word_grid_;
   bool show_hidden_{false};
   bool highlight_hit_{false};
   int num_hidden_{-1};
+  std::string name_{"AI"};
 
-  std::pair<char, int> sanitizeGuess(const char col, const int row);
+  std::tuple<char, int, char> sanitizeGuess(const char col, const int row,
+                                            const char guess);
 };
 #endif

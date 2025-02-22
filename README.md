@@ -29,6 +29,7 @@ Follow instructions on the console until the game is over.
 - [ ] Keyboard showing valid guesses
 - [ ] Guess entire words
 - [ ] Disallow words not in the dictionary
+- [ ] Set custom user name
 
 # Current limitations
 - [ ] Missing features (see above)

@@ -1,0 +1,63 @@
+#ifndef GAME_H
+#define GAME_H
+#include <memory>
+#include <string>
+
+#include "GameParams.h"
+#include "GameState.h"
+#include "Grid.h"
+#include "WordLoader.h"
+class Talker {
+ public:
+  void welcome();
+  void goodbye();
+  void instructions();
+  void guessInstructions();
+  void hit();
+  void miss();
+  void invalidGuess();
+  std::string highlight(const std::string& text);
+  std::string highlight_small(const std::string& text);
+  std::string separator() { return separator_; }
+  template <typename T>
+  T getUserInput(const std::string& prompt = "") {
+    T input;
+    std::cout << prompt << ":";
+    std::cin >> input;
+    return input;
+  }
+
+ private:
+  std::string separator_{"--------------------------"};
+  std::string highlighter_{" ############# "};
+  std::string highlighter_small_{"............."};
+};
+
+class Game {
+ public:
+  Game(const std::string& filename);
+  void setUserParams();
+
+  // getters
+  GameState getState() const { return state_; }
+  const GameParams& getParams() const { return params_; }
+
+  void run();
+
+  // Temp
+  Grid& getAIGrid() { return AI_grid_; }
+
+ private:
+  GameState state_;
+  GameParams params_;
+  WordLoader wordloader_;
+  Grid user_grid_;
+  Grid AI_grid_;
+  Talker talker_;
+
+  void displayGrids();
+  void processInput();
+  void processGuess();
+};
+
+#endif  // GAME_H

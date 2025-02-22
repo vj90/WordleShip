@@ -6,6 +6,7 @@
 #include <iostream>
 
 WordLoader::WordLoader(const std::string& filename) {
+  std::cout << "Loading words..." << std::endl;
   file_.open(filename);
   if (!file_.is_open() || file_.fail()) {
     std::runtime_error("Failed to open file");
