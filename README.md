@@ -19,10 +19,10 @@ Follow instructions on the console until the game is over.
 
 # Latest features
 - More words
+- Maximum number of guesses
 
 # Upcoming features
-- [x] More words
-- [ ] Maximum number of guesses
+- [x] Maximum number of guesses
 - [ ] Hints
 - [ ] Play against the computer
 - [ ] Two different modes of play
