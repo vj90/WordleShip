@@ -1,9 +1,10 @@
 #include <iostream>
 
+#include "GameParams.h"
 #include "Grid.h"
 #include "WordLoader.h"
 
-void processGuess(Grid& grid) {
+bool processGuess(Grid& grid) {
   std::cout << "Enter column (A-E), row (1-5), and guess" << std::endl;
   char col;
   int row;
@@ -24,38 +25,47 @@ void processGuess(Grid& grid) {
   } else {
     std::cout << "Invalid guess" << std::endl;
   }
+  return res.valid;
 }
 
-bool processInput(Grid& grid) {
+struct ProcessInputStatus {
+  bool exit{false};
+  bool valid_guess{true};
+};
+
+ProcessInputStatus processInput(Grid& grid) {
+  ProcessInputStatus status;
   std::cout << "Press 'g' to make a guess, 'q' to exit" << std::endl;
   std::string input;
   std::cin >> input;
   if (input == "q") {
-    return true;
+    status.exit = true;
+    return status;
   } else if (input == "g") {
-    processGuess(grid);
+    status.valid_guess = processGuess(grid);
   }
-  return false;
+  return status;
 }
 
 int main() {
   std::cout << "Loading words..." << std::endl;
   WordLoader loader("wordlist.txt");
-  const auto words = loader.sample_words(5);
-  // print words to console
-  for (const auto& word : words) {
-    std::cout << word << std::endl;
-  }
+
+  GameParams params;
+  params.setUserParams();
 
   Grid AI_grid(loader);
   bool exit{false};
   bool game_over{false};
+  int num_guesses{0};
 
   // game loop
   std::cout << "Welcome to the WordleShip!" << std::endl;
-  while (!exit && !game_over) {
+  while (!exit && !game_over && num_guesses < params.max_guesses) {
     AI_grid.displayGrid();
-    exit = processInput(AI_grid);
+    auto result = processInput(AI_grid);
+    exit = result.exit;
+    num_guesses = result.valid_guess ? num_guesses + 1 : num_guesses;
   }
   AI_grid.displayGrid();
   std::cout << "Game over!" << std::endl;
