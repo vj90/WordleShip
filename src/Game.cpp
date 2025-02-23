@@ -20,6 +20,10 @@ void Game::run() {
   while (state_.gameOn(params_.max_guesses)) {
     displayGrids();
     processInput();
+    // Exit game here in case of quit command
+    if (state_.exit) {
+      continue;
+    }
     talker_.separator();
     processAITurn();
     talker_.separator();
