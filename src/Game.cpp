@@ -118,10 +118,10 @@ void Talker::guessInstructions() {
 }
 
 void Talker::hit() {
-  std::cout << "\n" << highlight_small("Hit!") << std::endl;
+  std::cout << "\n\t\t\t\t\t" << highlight_small("Hit!") << std::endl;
 }
 void Talker::miss() {
-  std::cout << "\n" << highlight_small("Miss!") << std::endl;
+  std::cout << "\n\t\t\t\t\t" << highlight_small("Miss!") << std::endl;
 }
 void Talker::invalidGuess() {
   std::cout << "Invalid guess. Try again." << std::endl;
