@@ -18,7 +18,7 @@ Guess the 5x5 grid of letters. Rows are valid words, columns are not
 Follow instructions on the console until the game is over.
 
 # Latest in this version
-- [ ] Improved guessing experience
+- [x] Improved guessing experience
 
 # Upcoming features (roughly in order of priority)
 - [ ] Disallow words not in the dictionary
