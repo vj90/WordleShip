@@ -4,10 +4,12 @@
 #include <string>
 
 #include "AIPlayer.h"
+#include "GameInput.h"
 #include "GameParams.h"
 #include "GameState.h"
 #include "Grid.h"
 #include "WordLoader.h"
+
 class Talker {
  public:
   void welcome();
@@ -56,11 +58,12 @@ class Game {
   Grid AI_grid_;
   Talker talker_;
   EasyAIPlayer AI_;
+  GameInput ip_;
 
   void displayGrids();
   void processInput();
   void processAITurn();
-  void processGuess();
+  bool processGuess(const std::string& grid_input);
   void checkGridStatus();
 };
 

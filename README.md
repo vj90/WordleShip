@@ -1,4 +1,4 @@
-# WordleShip
+# WordleShip v1.1
 A hybrid of Wordle and Battleship.
 
 # Installation
@@ -17,11 +17,10 @@ Guess the 5x5 grid of letters. Rows are valid words, columns are not
 ## Instructions 
 Follow instructions on the console until the game is over.
 
-# Latest features
-- Play against the computer
+# Latest in this version
+- [x] Improved guessing experience
 
 # Upcoming features (roughly in order of priority)
-- [x] Play against the computer
 - [ ] Disallow words not in the dictionary
 - [ ] User can choose own words
 - [ ] Set custom user name

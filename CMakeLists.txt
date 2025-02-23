@@ -24,7 +24,8 @@ set (SOURCES
     src/Grid.cpp 
     src/WordLoader.cpp 
     src/Game.cpp
-    src/AIPlayer.cpp)
+    src/AIPlayer.cpp
+    src/GameInput.cpp)
 
 add_executable(Wordleship_Simple ${SOURCES})
 

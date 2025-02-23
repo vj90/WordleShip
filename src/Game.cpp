@@ -6,6 +6,7 @@ Game::Game(const std::string& filename)
     : wordloader_(filename), user_grid_(true, true), AI_grid_(false, false) {
   // Give the user option to change params
   setUserParams();
+  ip_.init(params_.kWordLength, params_.num_words);
   user_grid_.init(wordloader_, params_.num_words);
   user_grid_.set_name("User");
   AI_grid_.init(wordloader_, params_.num_words);
@@ -19,6 +20,10 @@ void Game::run() {
   while (state_.gameOn(params_.max_guesses)) {
     displayGrids();
     processInput();
+    // Exit game here in case of quit command
+    if (state_.exit) {
+      continue;
+    }
     talker_.separator();
     processAITurn();
     talker_.separator();
@@ -39,14 +44,17 @@ void Game::displayGrids() {
 }
 
 void Game::processInput() {
-  std::string input{"z"};
-  while (input != "q" && input != "g") {
+  bool stay_in_current_turn{true};
+  while (!state_.exit && stay_in_current_turn) {
     talker_.instructions();
-    input = talker_.getUserInput<std::string>();
-    if (input == "q") {
+    std::string input = talker_.getUserInput<std::string>();
+    const bool grid_input_valid = ip_.sanitizeGridCellInput(input);
+    if (grid_input_valid) {
+      // Take further inputs
+      const bool valid_guess = processGuess(input);
+      stay_in_current_turn = valid_guess ? false : true;
+    } else if (input == "q") {
       state_.exit = true;
-    } else if (input == "g") {
-      processGuess();
     } else {
       talker_.invalidInput();
     }
@@ -66,12 +74,11 @@ void Game::processAITurn() {
   }
 }
 
-void Game::processGuess() {
+bool Game::processGuess(const std::string& grid_input) {
   talker_.guessInstructions();
-  Guess guess;
-  guess.col = talker_.getUserInput<char>("col");
-  guess.row = talker_.getUserInput<int>("row");
-  guess.guess = talker_.getUserInput<char>("guess");
+  Guess guess = ip_.convertToGuess(grid_input,  //
+                                   talker_.getUserInput<char>("guess"));
+
   const auto res = AI_grid_.guess(guess);
   if (res.valid) {
     res.hit == true ? talker_.hit() : talker_.miss();
@@ -80,6 +87,7 @@ void Game::processGuess() {
   } else {
     talker_.invalidGuess();
   }
+  return res.valid;
 }
 
 void Game::checkGridStatus() {
@@ -110,18 +118,19 @@ std::string Talker::highlight_small(const std::string& text) {
 }
 
 void Talker::instructions() {
-  std::cout << "Press 'g' to make a guess, 'q' to exit" << std::endl;
+  std::cout << "Enter grid position to guess (<A-E><1-5>), 'q' to exit"
+            << std::endl;
 }
 
 void Talker::guessInstructions() {
-  std::cout << "Enter column (A-E), row (1-5), and guess" << std::endl;
+  std::cout << "Enter a letter <a-z>" << std::endl;
 }
 
 void Talker::hit() {
-  std::cout << "\n" << highlight_small("Hit!") << std::endl;
+  std::cout << "\n\t\t\t\t\t" << highlight_small("Hit!") << std::endl;
 }
 void Talker::miss() {
-  std::cout << "\n" << highlight_small("Miss!") << std::endl;
+  std::cout << "\n\t\t\t\t\t" << highlight_small("Miss!") << std::endl;
 }
 void Talker::invalidGuess() {
   std::cout << "Invalid guess. Try again." << std::endl;
@@ -132,7 +141,8 @@ void Talker::AITurn() {
 }
 
 void Talker::invalidInput() {
-  std::cout << "Invalid input. Try again." << std::endl;
+  std::cout << "Invalid input. Examples of inputs :\"D3\", \"e4\" Try again."
+            << std::endl;
 }
 
 void Talker::won(const std::string& who) {
