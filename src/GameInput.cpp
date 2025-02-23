@@ -1,8 +1,7 @@
 #include "GameInput.h"
 
 void GameInput::init(const int word_length, const int num_words) {
-  min_row_ = 1;
-  max_row_ = num_words;
+  max_row_ = '0' + num_words;
   min_col_ = 'A';
   max_col_ = 'A' + word_length - 1;
 }
@@ -14,7 +13,6 @@ bool GameInput::sanitizeGridCellInput(std::string& user_input) const {
   const auto& row_char = user_input[1];
   auto& col_char = user_input[0];
   col_char = std::toupper(col_char);
-
   if (row_char < min_row_ || row_char > max_row_) {
     return false;
   }
