@@ -25,55 +25,70 @@ void Grid::init(WordLoader& wordloader, const int num_words) {
   }
 }
 
-GuessResult Grid::guess(const char col_in, const int row_in,
-                        const char guess_in) {
+GuessResult Grid::guess(const Guess& player_guess) {
   assert(num_hidden_ > 0 && "Invalid grid, no more hidden letters");
   GuessResult res;
   // validate col
-  auto [col, row, guess] = sanitizeGuess(col_in, row_in, guess_in);
-  res.valid = col >= 'A' && col <= 'E' && row >= 1 && row <= num_words_;
-  res.valid = res.valid && guess >= 'a' && guess <= 'z';
+  const auto guess = sanitizeGuess(player_guess);
+  res.valid = guess.col >= 'A' && guess.col <= 'E' && guess.row >= 1 &&
+              guess.row <= num_words_;
+  res.valid = res.valid && guess.guess >= 'a' && guess.guess <= 'z';
   if (res.valid) {
     // char2int
-    int j = col - 'A';
-    int i = row - 1;
+    int j = guess.col - 'A';
+    int i = guess.row - 1;
     res.valid = word_grid_[i][j].is_hidden;
     if (res.valid) {
-      res.hit = word_grid_[i][j].letter == guess ? true : false;
+      res.hit = word_grid_[i][j].letter == guess.guess ? true : false;
       if (res.hit) {
-        for (auto& row : word_grid_) {
-          for (auto& grid_elem : row) {
-            if (grid_elem.letter == guess) {
-              grid_elem.is_hidden = false;
-              num_hidden_--;
-            }
-          }
-        }
+        revealLetter(guess.guess);
       }
     }
   }
   return res;
 }
 
-std::tuple<char, int, char> Grid::sanitizeGuess(const char col, const int row,
-                                                const char guess) {
-  const char new_col = toupper(col, std::locale());
-  const char new_guess = tolower(guess, std::locale());
-  return std::make_tuple(new_col, row, new_guess);
+void Grid::reveal(const Guess& guess) {
+  const auto guess_sanitized = sanitizeGuess(guess);
+  revealLetter(guess_sanitized.guess, true);
+}
+
+Guess Grid::sanitizeGuess(const Guess& player_guess) {
+  const char new_col = toupper(player_guess.col, std::locale());
+  const char new_guess = tolower(player_guess.guess, std::locale());
+  return {new_col, player_guess.row, new_guess};
+}
+
+void Grid::revealLetter(const char letter, const bool self_reveal) {
+  for (auto& row : word_grid_) {
+    for (auto& grid_elem : row) {
+      if (grid_elem.letter == letter) {
+        if (grid_elem.is_hidden) {  // only reveal once
+          grid_elem.is_hidden = false;
+          grid_elem.self_revealed = self_reveal;
+          num_hidden_--;
+        }
+      }
+    }
+  }
 }
 
 void Grid::displayGrid() const {
-  std::cout << "  A B C D E\n";
+  std::cout << "  'A' 'B' 'C' 'D' 'E'\n";
   for (int i = 0; i < num_words_; i++) {
     std::cout << i + 1 << " ";
     const auto& current_row = word_grid_[i];
     for (const auto& grid_elem : current_row) {
       if (grid_elem.is_hidden && !show_hidden_) {
-        std::cout << "_ ";
+        std::cout << " _  ";
       } else if (!grid_elem.is_hidden && highlight_hit_) {
-        std::cout << toupper(grid_elem.letter, std::locale()) << " ";
+        const std::string highlight_symbol =
+            grid_elem.self_revealed ? self_revealed_ : opponent_revealed_;
+        std::cout << highlight_symbol
+                  << toupper(grid_elem.letter, std::locale())
+                  << highlight_symbol << " ";
       } else {
-        std::cout << grid_elem.letter << " ";
+        std::cout << " " << grid_elem.letter << "  ";
       }
     }
     std::cout << "\n";

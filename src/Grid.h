@@ -4,6 +4,7 @@
 #include <tuple>
 #include <vector>
 
+#include "Guess.h"
 #include "WordLoader.h"
 
 struct GridData {
@@ -11,6 +12,7 @@ struct GridData {
       : letter(letter), is_hidden(is_hidden) {}
   char letter{'_'};
   bool is_hidden{true};
+  bool self_revealed{false};
 };
 
 struct GuessResult {
@@ -24,8 +26,9 @@ class Grid {
   void init(WordLoader& wordloader, const int num_words);
 
   void displayGrid() const;
-  GuessResult guess(const char col_in, const int row_in, const char guess);
+  GuessResult guess(const Guess& player_guess);
   bool revealed() const { return num_hidden_ == 0; }
+  void reveal(const Guess& guess);
 
   // setters and getters
   void set_show_hidden(bool show_hidden) { show_hidden_ = show_hidden; }
@@ -34,6 +37,9 @@ class Grid {
   bool get_highlight_hit() const { return highlight_hit_; }
   void set_name(const std::string& name) { name_ = name; }
   const std::string& name() const { return name_; }
+  const std::vector<std::vector<GridData>>& word_grid() const {
+    return word_grid_;
+  }
 
  private:
   static constexpr int kWordLength_{5};
@@ -43,8 +49,10 @@ class Grid {
   bool highlight_hit_{false};
   int num_hidden_{-1};
   std::string name_{"AI"};
+  const std::string self_revealed_{"'"};
+  const std::string opponent_revealed_{"*"};
 
-  std::tuple<char, int, char> sanitizeGuess(const char col, const int row,
-                                            const char guess);
+  Guess sanitizeGuess(const Guess& player_guess);
+  void revealLetter(const char letter, const bool self_reveal = false);
 };
 #endif

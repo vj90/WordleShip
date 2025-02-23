@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 
+#include "AIPlayer.h"
 #include "GameParams.h"
 #include "GameState.h"
 #include "Grid.h"
@@ -16,6 +17,9 @@ class Talker {
   void hit();
   void miss();
   void invalidGuess();
+  void AITurn();
+  void invalidInput();
+  void won(const std::string& who);
   std::string highlight(const std::string& text);
   std::string highlight_small(const std::string& text);
   std::string separator() { return separator_; }
@@ -44,9 +48,6 @@ class Game {
 
   void run();
 
-  // Temp
-  Grid& getAIGrid() { return AI_grid_; }
-
  private:
   GameState state_;
   GameParams params_;
@@ -54,10 +55,13 @@ class Game {
   Grid user_grid_;
   Grid AI_grid_;
   Talker talker_;
+  EasyAIPlayer AI_;
 
   void displayGrids();
   void processInput();
+  void processAITurn();
   void processGuess();
+  void checkGridStatus();
 };
 
 #endif  // GAME_H

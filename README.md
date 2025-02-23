@@ -18,19 +18,19 @@ Guess the 5x5 grid of letters. Rows are valid words, columns are not
 Follow instructions on the console until the game is over.
 
 # Latest features
-- More words
-- Maximum number of guesses
+- Play against the computer
 
-# Upcoming features
-- [x] Maximum number of guesses
+# Upcoming features (roughly in order of priority)
+- [x] Play against the computer
+- [ ] Disallow words not in the dictionary
+- [ ] User can choose own words
+- [ ] Set custom user name
+- [ ] Hints for user parameters
+- [ ] Improve computer game play
 - [ ] Hints
-- [ ] Play against the computer
 - [ ] Two different modes of play
 - [ ] Keyboard showing valid guesses
 - [ ] Guess entire words
-- [ ] Disallow words not in the dictionary
-- [ ] Set custom user name
 
 # Current limitations
 - [ ] Missing features (see above)
-- [x] Only one grid

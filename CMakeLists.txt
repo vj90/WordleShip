@@ -19,7 +19,14 @@ if(BUILD_GMOCK)
 endif()
 #########################
 
-add_executable(Wordleship_Simple src/main.cpp src/Grid.cpp src/WordLoader.cpp src/Game.cpp)
+set (SOURCES 
+    src/main.cpp 
+    src/Grid.cpp 
+    src/WordLoader.cpp 
+    src/Game.cpp
+    src/AIPlayer.cpp)
+
+add_executable(Wordleship_Simple ${SOURCES})
 
 if (BUILD_GMOCK)
     # Note: this needs to come before the add_subdirectory(test) so that ctest can find the test executable

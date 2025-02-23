@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include "Guess.h"
+
 Game::Game(const std::string& filename)
     : wordloader_(filename), user_grid_(true, true), AI_grid_(false, false) {
   // Give the user option to change params
@@ -18,7 +20,10 @@ void Game::run() {
     displayGrids();
     processInput();
     talker_.separator();
+    processAITurn();
+    talker_.separator();
     // check game conditions
+    checkGridStatus();
   }
   displayGrids();
   talker_.goodbye();
@@ -28,35 +33,68 @@ void Game::displayGrids() {
   std::cout << talker_.separator() << "\n";
   std::cout << talker_.highlight_small("AI") << "\n";
   AI_grid_.displayGrid();
-  std::cout << talker_.highlight_small(user_grid_.name()) << "\n";
+  std::cout << "\n" << talker_.highlight_small(user_grid_.name()) << "\n";
   user_grid_.displayGrid();
   std::cout << talker_.separator() << std::endl;
 }
 
 void Game::processInput() {
-  talker_.instructions();
-  const auto input = talker_.getUserInput<std::string>();
-  if (input == "q") {
-    state_.exit = true;
-  } else if (input == "g") {
-    processGuess();
+  std::string input{"z"};
+  while (input != "q" && input != "g") {
+    talker_.instructions();
+    input = talker_.getUserInput<std::string>();
+    if (input == "q") {
+      state_.exit = true;
+    } else if (input == "g") {
+      processGuess();
+    } else {
+      talker_.invalidInput();
+    }
+  }
+}
+
+void Game::processAITurn() {
+  talker_.AITurn();
+  const Guess guess = AI_.guess(user_grid_);
+  const auto res = user_grid_.guess(guess);
+  if (res.valid) {
+    res.hit == true ? talker_.hit() : talker_.miss();
+    AI_grid_.reveal(guess);
+  } else {
+    talker_.invalidGuess();
+    std::cin.clear();
   }
 }
 
 void Game::processGuess() {
   talker_.guessInstructions();
-  const auto col = talker_.getUserInput<char>("col");
-  const auto row = talker_.getUserInput<int>("row");
-  const auto guess = talker_.getUserInput<char>("guess");
-  const auto res = AI_grid_.guess(col, row, guess);
+  Guess guess;
+  guess.col = talker_.getUserInput<char>("col");
+  guess.row = talker_.getUserInput<int>("row");
+  guess.guess = talker_.getUserInput<char>("guess");
+  const auto res = AI_grid_.guess(guess);
   if (res.valid) {
     res.hit == true ? talker_.hit() : talker_.miss();
     state_.num_guesses++;
+    user_grid_.reveal(guess);
   } else {
     talker_.invalidGuess();
   }
 }
 
+void Game::checkGridStatus() {
+  if (user_grid_.revealed() || AI_grid_.revealed()) {
+    if (user_grid_.revealed() && AI_grid_.revealed()) {
+      talker_.won("Both");
+
+    } else if (user_grid_.revealed()) {
+      talker_.won("AI");
+    } else {
+      talker_.won("User");
+    }
+    state_.game_over = true;
+  }
+}
 // ################################################################################
 
 void Talker::welcome() {
@@ -87,4 +125,16 @@ void Talker::miss() {
 }
 void Talker::invalidGuess() {
   std::cout << "Invalid guess. Try again." << std::endl;
+}
+
+void Talker::AITurn() {
+  std::cout << highlight_small("AI's turn") << std::endl;
+}
+
+void Talker::invalidInput() {
+  std::cout << "Invalid input. Try again." << std::endl;
+}
+
+void Talker::won(const std::string& who) {
+  std::cout << highlight("Congratulations, " + who + " won!") << std::endl;
 }
