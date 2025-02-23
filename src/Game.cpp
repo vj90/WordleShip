@@ -6,6 +6,7 @@ Game::Game(const std::string& filename)
     : wordloader_(filename), user_grid_(true, true), AI_grid_(false, false) {
   // Give the user option to change params
   setUserParams();
+  ip_.init(params_.kWordLength, params_.num_words);
   user_grid_.init(wordloader_, params_.num_words);
   user_grid_.set_name("User");
   AI_grid_.init(wordloader_, params_.num_words);
@@ -40,7 +41,7 @@ void Game::displayGrids() {
 
 void Game::processInput() {
   std::string input{"z"};
-  while (input != "q" && input != "g") {
+  while (input != "q" && input != "g" && !state_.exit) {
     talker_.instructions();
     input = talker_.getUserInput<std::string>();
     if (input == "q") {
