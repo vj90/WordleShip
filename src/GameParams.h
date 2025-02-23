@@ -6,6 +6,9 @@ struct GameParams {
   GameParams() = default;
   int num_words{5};
   int max_guesses{50};
+  static constexpr int kMinWords{1};
+  static constexpr int kMaxWords{10};
+  static constexpr int kWordLength{5};
 
   void setUserParams() {
     std::cout << "Current parameters:\n" << *this;
@@ -24,7 +27,7 @@ struct GameParams {
             std::cout << "Enter new number of words: ";
             int input_num_words;
             std::cin >> input_num_words;
-            if (input_num_words < 1 || input_num_words > 10) {
+            if (input_num_words < kMinWords || input_num_words > kMaxWords) {
               std::cout << "Invalid number of words" << std::endl;
             } else {
               num_words = input_num_words;
