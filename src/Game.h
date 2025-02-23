@@ -63,7 +63,7 @@ class Game {
   void displayGrids();
   void processInput();
   void processAITurn();
-  void processGuess();
+  bool processGuess(const std::string& grid_input);
   void checkGridStatus();
 };
 
