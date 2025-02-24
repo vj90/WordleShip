@@ -109,7 +109,8 @@ std::pair<int /*col*/, int /*row*/> Grid::get_grid_idx(
 }
 
 void Grid::displayKeyboard() const { keyboard_.display(grid_invalid_letters_); }
-void Grid::displayCellKeyboard(const int col, const int row) const {
+void Grid::displayCellKeyboard(const Guess& guess) const {
+  const auto [col, row] = get_grid_idx(guess);
   const auto& cell_invalid_letters = word_grid_[row][col].cell_invalid_letters;
   keyboard_.display(grid_invalid_letters_, cell_invalid_letters);
 }

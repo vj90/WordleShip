@@ -34,7 +34,7 @@ class Grid {
   bool revealed() const { return num_hidden_ == 0; }
   void reveal(const Guess& guess);
   void displayKeyboard() const;
-  void displayCellKeyboard(const int col, const int row) const;
+  void displayCellKeyboard(const Guess& guess) const;
 
   // setters and getters
   void set_show_hidden(bool show_hidden) { show_hidden_ = show_hidden; }
