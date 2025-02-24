@@ -25,24 +25,22 @@ void Grid::init(WordLoader& wordloader, const int num_words) {
   }
 }
 
-GuessResult Grid::guess(const Guess& player_guess) {
+GuessResult Grid::guess(const Guess& player_guess,
+                        const bool display_keyboard) {
   assert(num_hidden_ > 0 && "Invalid grid, no more hidden letters");
   GuessResult res;
-  // validate col
-  const auto guess = sanitizeGuess(player_guess);
-  res.valid = guess.col >= 'A' && guess.col <= 'E' && guess.row >= 1 &&
-              guess.row <= num_words_;
-  res.valid = res.valid && guess.guess >= 'a' && guess.guess <= 'z';
+  int j = player_guess.col - col_alphabet_start;
+  int i = player_guess.row - 1;
+  // validate guess
+  res.valid = validateGuess(i, j, player_guess.guess);
+
   if (res.valid) {
-    // char2int
-    int j = guess.col - 'A';
-    int i = guess.row - 1;
-    res.valid = word_grid_[i][j].is_hidden;
-    if (res.valid) {
-      res.hit = word_grid_[i][j].letter == guess.guess ? true : false;
-      if (res.hit) {
-        revealLetter(guess.guess);
-      }
+    if (display_keyboard) {
+      displayCellKeyboard(j, i);
+    }
+    res.hit = word_grid_[i][j].letter == player_guess.guess ? true : false;
+    if (res.hit) {
+      revealLetter(player_guess.guess);
     }
   }
   return res;
@@ -71,6 +69,47 @@ void Grid::revealLetter(const char letter, const bool self_reveal) {
       }
     }
   }
+  // Invalidate letter for entire grid
+  const int char_idx = letter - grid_alphabet_start;
+  grid_invalid_letters_.set(char_idx);
+}
+
+bool Grid::validateGuess(const int cell_row_idx, const int cell_col_idx,
+                         char player_letter) {
+  auto& cell = word_grid_[cell_row_idx][cell_col_idx];
+  bool valid = {false};
+  // cell within grids
+  valid = (cell_row_idx < num_words_) && (cell_col_idx < kWordLength_);
+  if (!valid) {
+    std::cout << "\nGrid cell out of bounds\n";
+  }
+  // cell is hidden
+  valid = valid && cell.is_hidden;
+  if (!valid) {
+    std::cout << "\nGrid cell already revealed\n";
+  }
+  // guessed letter is valid
+  const int char_idx = player_letter - grid_alphabet_start;
+  valid = valid && !(cell.cell_invalid_letters[char_idx] ||
+                     grid_invalid_letters_[char_idx]);
+  if (!valid) {
+    std::cout << "\nChar idx = " << char_idx << "\n";
+    std::cout << "grid_invalid_letters_ = " << grid_invalid_letters_ << "\n";
+    std::cout << "cell.cell_invalid_letters = " << cell.cell_invalid_letters
+              << "\n";
+    std::cout << "\nGuessed letter already guessed\n";
+  }
+  // if valid, then invalidate this letter for this cell
+  if (valid) {
+    cell.cell_invalid_letters.set(char_idx);
+  }
+  return valid;
+}
+
+void Grid::displayKeyboard() const { keyboard_.display(grid_invalid_letters_); }
+void Grid::displayCellKeyboard(const int col, const int row) const {
+  const auto& cell_invalid_letters = word_grid_[row][col].cell_invalid_letters;
+  keyboard_.display(grid_invalid_letters_, cell_invalid_letters);
 }
 
 void Grid::displayGrid() const {
