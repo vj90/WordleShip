@@ -13,7 +13,7 @@ struct GameParams {
   void setUserParams() {
     std::cout << "Current parameters:\n" << *this;
     std::string input{'z'};
-    std::cout << "Enter new parameters? y/[any key to continue]:";
+    std::cout << "Enter new parameters? y/n:";
     std::cin >> input;
     if (input[0] == 'y') {
       char param_num{'z'};
