@@ -30,6 +30,7 @@ struct Keyboard {
       std::cout << " " << getchar(i);
     }
     std::cout << " |\n";
+    std::cout << "----------------------\n";
   }
 };
 
