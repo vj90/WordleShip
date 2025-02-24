@@ -1,6 +1,7 @@
 #ifndef GRID_H
 #define GRID_H
 #include <array>
+#include <bitset>
 #include <tuple>
 #include <vector>
 
@@ -13,6 +14,7 @@ struct GridData {
   char letter{'_'};
   bool is_hidden{true};
   bool self_revealed{false};
+  std::bitset<26> cell_invalid_letters;
 };
 
 struct GuessResult {
@@ -51,8 +53,10 @@ class Grid {
   std::string name_{"AI"};
   const std::string self_revealed_{"'"};
   const std::string opponent_revealed_{"*"};
+  std::bitset<26> grid_invalid_letters;
 
   Guess sanitizeGuess(const Guess& player_guess);
   void revealLetter(const char letter, const bool self_reveal = false);
 };
+
 #endif
