@@ -3,10 +3,11 @@
 #include <bitset>
 #include <iostream>
 struct Keyboard {
+  static constexpr int kNumLetters{26};
   Keyboard() = default;
-  void display(
-      const std::bitset<26>& invalid_grid_letters,
-      const std::bitset<26>& invalid_cell_letters = std::bitset<26>()) const {
+  void display(const std::bitset<kNumLetters>& invalid_grid_letters,
+               const std::bitset<kNumLetters>& invalid_cell_letters =
+                   std::bitset<kNumLetters>()) const {
     const std::bitset<26>& invalid_letters =
         invalid_grid_letters | invalid_cell_letters;
 
@@ -16,15 +17,16 @@ struct Keyboard {
 
     std::cout << "\n----------------------\n";
     std::cout << "| ";
-    for (int i = 0; i < 9; i++) {
+    constexpr int num_letters_in_row = 9;
+    for (int i = 0; i < num_letters_in_row; i++) {
       std::cout << " " << getchar(i);
     }
     std::cout << " |\n|  ";
-    for (int i = 9; i < 17; i++) {
+    for (int i = num_letters_in_row; i < 2 * num_letters_in_row - 1; i++) {
       std::cout << " " << getchar(i);
     }
     std::cout << "  |\n| ";
-    for (int i = 17; i < 26; i++) {
+    for (int i = 2 * num_letters_in_row - 1; i < kNumLetters; i++) {
       std::cout << " " << getchar(i);
     }
     std::cout << " |\n";
