@@ -24,7 +24,7 @@ class EasyAIPlayer : public AIPlayer {
   Guess guess(Grid& grid) override;
 
  private:
-  char make_radom_guess();
+  int make_radom_guess();
 };
 
 #endif  // AIPLAYER_H
