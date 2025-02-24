@@ -36,10 +36,10 @@ void Game::run() {
 
 void Game::displayGrids() {
   std::cout << talker_.separator() << "\n";
-  std::cout << talker_.highlight_small("AI") << "\n";
-  AI_grid_.displayGrid();
   std::cout << "\n" << talker_.highlight_small(user_grid_.name()) << "\n";
   user_grid_.displayGrid();
+  std::cout << talker_.highlight_small("AI") << "\n";
+  AI_grid_.displayGrid();
   std::cout << talker_.separator() << std::endl;
 }
 
@@ -47,11 +47,14 @@ void Game::processInput() {
   bool stay_in_current_turn{true};
   while (!state_.exit && stay_in_current_turn) {
     talker_.instructions();
+    AI_grid_.displayKeyboard();
     std::string input = talker_.getUserInput<std::string>();
     const bool grid_input_valid = ip_.sanitizeGridCellInput(input);
     if (grid_input_valid) {
+      Guess guess = ip_.convertToGuess(input,  //
+                                       '\0');  // dummy letter
       // Take further inputs
-      const bool valid_guess = processGuess(input);
+      const bool valid_guess = processGuess(guess);
       stay_in_current_turn = valid_guess ? false : true;
     } else if (input == "q") {
       state_.exit = true;
@@ -74,10 +77,10 @@ void Game::processAITurn() {
   }
 }
 
-bool Game::processGuess(const std::string& grid_input) {
+bool Game::processGuess(Guess& guess) {
   talker_.guessInstructions();
-  Guess guess = ip_.convertToGuess(grid_input,  //
-                                   talker_.getUserInput<char>("guess"));
+  AI_grid_.displayCellKeyboard(guess);
+  guess.guess = talker_.getUserInput<char>("guess");
 
   const auto res = AI_grid_.guess(guess);
   if (res.valid) {

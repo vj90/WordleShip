@@ -1,10 +1,12 @@
 #ifndef GRID_H
 #define GRID_H
 #include <array>
+#include <bitset>
 #include <tuple>
 #include <vector>
 
 #include "Guess.h"
+#include "Keyboard.h"
 #include "WordLoader.h"
 
 struct GridData {
@@ -13,6 +15,8 @@ struct GridData {
   char letter{'_'};
   bool is_hidden{true};
   bool self_revealed{false};
+  std::bitset<26> cell_invalid_letters;
+  void make_all_letters_invalid() { cell_invalid_letters.set(); }
 };
 
 struct GuessResult {
@@ -29,6 +33,8 @@ class Grid {
   GuessResult guess(const Guess& player_guess);
   bool revealed() const { return num_hidden_ == 0; }
   void reveal(const Guess& guess);
+  void displayKeyboard() const;
+  void displayCellKeyboard(const Guess& guess) const;
 
   // setters and getters
   void set_show_hidden(bool show_hidden) { show_hidden_ = show_hidden; }
@@ -40,9 +46,16 @@ class Grid {
   const std::vector<std::vector<GridData>>& word_grid() const {
     return word_grid_;
   }
+  const std::bitset<26>& gridInvalidLetters() const {
+    return grid_invalid_letters_;
+  }
+  // public members;
+  static constexpr char grid_alphabet_start{'a'};  // letters in grid are small
+  static constexpr char col_alphabet_start{'A'};   // column letters are BIG
 
  private:
   static constexpr int kWordLength_{5};
+
   int num_words_{-1};
   std::vector<std::vector<GridData>> word_grid_;
   bool show_hidden_{false};
@@ -51,8 +64,14 @@ class Grid {
   std::string name_{"AI"};
   const std::string self_revealed_{"'"};
   const std::string opponent_revealed_{"*"};
+  std::bitset<26> grid_invalid_letters_;
+  Keyboard keyboard_;
 
   Guess sanitizeGuess(const Guess& player_guess);
   void revealLetter(const char letter, const bool self_reveal = false);
+  bool validateGuess(const int cell_row_idx, const int cell_col_idx,
+                     char player_letter);
+  std::pair<int /*col*/, int /*row*/> get_grid_idx(const Guess& guess) const;
 };
+
 #endif
