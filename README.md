@@ -1,4 +1,4 @@
-# WordleShip v1.1
+# WordleShip v2.0
 A hybrid of Wordle and Battleship.
 
 # Installation
@@ -22,12 +22,11 @@ Follow instructions on the console until the game is over.
 - [x] Slightly improved computer game play
 
 # Upcoming features (roughly in order of priority)
+- [ ] Two different modes of play (blind user grid)
+- [ ] Improve computer game play
 - [ ] User can choose own words
 - [ ] Set custom user name
 - [ ] Hints for user parameters
-- [ ] Improve computer game play
-- [ ] Hints
-- [ ] Two different modes of play
 - [ ] Guess entire words
 
 # Current limitations
