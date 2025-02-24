@@ -19,6 +19,11 @@ struct GridData {
   void make_all_letters_invalid() { cell_invalid_letters.set(); }
 };
 
+struct GuessResult {
+  bool valid{false};
+  bool hit{false};
+};
+
 class Grid {
  public:
   Grid(bool show_hidden = false, bool highlight_hit = false);
