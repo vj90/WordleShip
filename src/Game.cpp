@@ -47,6 +47,7 @@ void Game::processInput() {
   bool stay_in_current_turn{true};
   while (!state_.exit && stay_in_current_turn) {
     talker_.instructions();
+    AI_grid_.displayKeyboard();
     std::string input = talker_.getUserInput<std::string>();
     const bool grid_input_valid = ip_.sanitizeGridCellInput(input);
     if (grid_input_valid) {
