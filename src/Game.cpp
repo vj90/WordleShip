@@ -36,10 +36,10 @@ void Game::run() {
 
 void Game::displayGrids() {
   std::cout << talker_.separator() << "\n";
-  std::cout << talker_.highlight_small("AI") << "\n";
-  AI_grid_.displayGrid();
   std::cout << "\n" << talker_.highlight_small(user_grid_.name()) << "\n";
   user_grid_.displayGrid();
+  std::cout << talker_.highlight_small("AI") << "\n";
+  AI_grid_.displayGrid();
   std::cout << talker_.separator() << std::endl;
 }
 
