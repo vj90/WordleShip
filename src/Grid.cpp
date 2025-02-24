@@ -75,18 +75,23 @@ bool Grid::validateGuess(const int cell_row_idx, const int cell_col_idx,
   bool valid = {false};
   // cell within grids
   valid = (cell_row_idx < num_words_) && (cell_col_idx < kWordLength_);
+#ifdef DEBUG
   if (!valid) {
     std::cout << "\nGrid cell out of bounds\n";
   }
+#endif
   // cell is hidden
   valid = valid && cell.is_hidden;
+#ifdef DEBUG
   if (!valid) {
     std::cout << "\nGrid cell already revealed\n";
   }
+#endif
   // guessed letter is valid
   const int char_idx = player_letter - grid_alphabet_start;
   valid = valid && !(cell.cell_invalid_letters[char_idx] ||
                      grid_invalid_letters_[char_idx]);
+#ifdef DEBUG
   if (!valid) {
     std::cout << "\nChar idx = " << char_idx << "\n";
     std::cout << "grid_invalid_letters_ = " << grid_invalid_letters_ << "\n";
@@ -94,6 +99,7 @@ bool Grid::validateGuess(const int cell_row_idx, const int cell_col_idx,
               << "\n";
     std::cout << "\nGuessed letter already guessed\n";
   }
+#endif
   // if valid, then invalidate this letter for this cell
   if (valid) {
     cell.cell_invalid_letters.set(char_idx);
