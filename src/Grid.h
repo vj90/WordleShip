@@ -19,11 +19,6 @@ struct GridData {
   void make_all_letters_invalid() { cell_invalid_letters.set(); }
 };
 
-struct GuessResult {
-  bool valid{false};
-  bool hit{false};
-};
-
 class Grid {
  public:
   Grid(bool show_hidden = false, bool highlight_hit = false);
@@ -46,11 +41,16 @@ class Grid {
   const std::vector<std::vector<GridData>>& word_grid() const {
     return word_grid_;
   }
+  const std::bitset<26>& gridInvalidLetters() const {
+    return grid_invalid_letters_;
+  }
+  // public members;
+  static constexpr char grid_alphabet_start{'a'};  // letters in grid are small
+  static constexpr char col_alphabet_start{'A'};   // column letters are BIG
 
  private:
   static constexpr int kWordLength_{5};
-  static constexpr char grid_alphabet_start{'a'};  // letters in grid are small
-  static constexpr char col_alphabet_start{'A'};   // column letters are BIG
+
   int num_words_{-1};
   std::vector<std::vector<GridData>> word_grid_;
   bool show_hidden_{false};
