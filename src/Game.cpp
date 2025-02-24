@@ -79,6 +79,7 @@ void Game::processAITurn() {
 
 bool Game::processGuess(Guess& guess) {
   talker_.guessInstructions();
+  AI_grid_.displayCellKeyboard(guess);
   guess.guess = talker_.getUserInput<char>("guess");
 
   const auto res = AI_grid_.guess(guess);
