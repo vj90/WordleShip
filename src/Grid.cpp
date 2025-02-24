@@ -25,8 +25,7 @@ void Grid::init(WordLoader& wordloader, const int num_words) {
   }
 }
 
-GuessResult Grid::guess(const Guess& player_guess,
-                        const bool display_keyboard) {
+GuessResult Grid::guess(const Guess& player_guess) {
   assert(num_hidden_ > 0 && "Invalid grid, no more hidden letters");
   GuessResult res;
   int j = player_guess.col - col_alphabet_start;
@@ -35,9 +34,6 @@ GuessResult Grid::guess(const Guess& player_guess,
   res.valid = validateGuess(i, j, player_guess.guess);
 
   if (res.valid) {
-    if (display_keyboard) {
-      displayCellKeyboard(j, i);
-    }
     res.hit = word_grid_[i][j].letter == player_guess.guess ? true : false;
     if (res.hit) {
       revealLetter(player_guess.guess);

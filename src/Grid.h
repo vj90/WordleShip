@@ -30,8 +30,7 @@ class Grid {
   void init(WordLoader& wordloader, const int num_words);
 
   void displayGrid() const;
-  GuessResult guess(const Guess& player_guess,
-                    const bool display_keyboard = false);
+  GuessResult guess(const Guess& player_guess);
   bool revealed() const { return num_hidden_ == 0; }
   void reveal(const Guess& guess);
   void displayKeyboard() const;
