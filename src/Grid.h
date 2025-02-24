@@ -66,6 +66,7 @@ class Grid {
   void revealLetter(const char letter, const bool self_reveal = false);
   bool validateGuess(const int cell_row_idx, const int cell_col_idx,
                      char player_letter);
+  std::pair<int /*col*/, int /*row*/> get_grid_idx(const Guess& guess) const;
 };
 
 #endif

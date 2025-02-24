@@ -28,8 +28,7 @@ void Grid::init(WordLoader& wordloader, const int num_words) {
 GuessResult Grid::guess(const Guess& player_guess) {
   assert(num_hidden_ > 0 && "Invalid grid, no more hidden letters");
   GuessResult res;
-  int j = player_guess.col - col_alphabet_start;
-  int i = player_guess.row - 1;
+  const auto [j, i] = get_grid_idx(player_guess);
   // validate guess
   res.valid = validateGuess(i, j, player_guess.guess);
 
@@ -100,6 +99,13 @@ bool Grid::validateGuess(const int cell_row_idx, const int cell_col_idx,
     cell.cell_invalid_letters.set(char_idx);
   }
   return valid;
+}
+
+std::pair<int /*col*/, int /*row*/> Grid::get_grid_idx(
+    const Guess& guess) const {
+  int j = guess.col - col_alphabet_start;
+  int i = guess.row - 1;
+  return {j, i};
 }
 
 void Grid::displayKeyboard() const { keyboard_.display(grid_invalid_letters_); }
